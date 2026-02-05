@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.40.2.10011",
+      "templateHash": "9645734775374068641"
+    }
+  },
+  "parameters": {
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Object ID of the User, Group, or Service Principal to receive the role. Get this from Entra ID."
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "defaultValue": "Netapp Agent PreReq",
+      "metadata": {
+        "description": "The name of the custom role to create."
+      }
+    },
+    "roleDescription": {
+      "type": "string",
+      "defaultValue": "Custom role deployed via generic template.",
+      "metadata": {
+        "description": "The description of the role shown in IAM."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(subscription().id, parameters('roleName'))]",
+      "properties": {
+        "roleName": "[parameters('roleName')]",
+        "description": "[parameters('roleDescription')]",
+        "type": "CustomRole",
+        "assignableScopes": [
+          "[subscription().id]"
+        ],
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.Compute/disks/delete",
+              "Microsoft.Compute/disks/read",
+              "Microsoft.Compute/disks/write",
+              "Microsoft.Compute/locations/operations/read",
+              "Microsoft.Compute/operations/read",
+              "Microsoft.Compute/virtualMachines/instanceView/read",
+              "Microsoft.Compute/virtualMachines/read",
+              "Microsoft.Compute/virtualMachines/write",
+              "Microsoft.Compute/virtualMachines/delete",
+              "Microsoft.Compute/virtualMachines/extensions/write",
+              "Microsoft.Compute/virtualMachines/extensions/read",
+              "Microsoft.Compute/availabilitySets/read",
+              "Microsoft.Network/locations/operationResults/read",
+              "Microsoft.Network/locations/operations/read",
+              "Microsoft.Network/networkInterfaces/join/action",
+              "Microsoft.Network/networkInterfaces/read",
+              "Microsoft.Network/networkInterfaces/write",
+              "Microsoft.Network/networkInterfaces/delete",
+              "Microsoft.Network/networkSecurityGroups/join/action",
+              "Microsoft.Network/networkSecurityGroups/read",
+              "Microsoft.Network/networkSecurityGroups/write",
+              "Microsoft.Network/virtualNetworks/checkIpAddressAvailability/read",
+              "Microsoft.Network/virtualNetworks/read",
+              "Microsoft.Network/virtualNetworks/subnets/join/action",
+              "Microsoft.Network/virtualNetworks/subnets/read",
+              "Microsoft.Network/virtualNetworks/subnets/virtualMachines/read",
+              "Microsoft.Network/virtualNetworks/virtualMachines/read",
+              "Microsoft.Network/publicIPAddresses/write",
+              "Microsoft.Network/publicIPAddresses/read",
+              "Microsoft.Network/publicIPAddresses/delete",
+              "Microsoft.Network/networkSecurityGroups/securityRules/read",
+              "Microsoft.Network/networkSecurityGroups/securityRules/write",
+              "Microsoft.Network/networkSecurityGroups/securityRules/delete",
+              "Microsoft.Network/publicIPAddresses/join/action",
+              "Microsoft.Network/locations/virtualNetworkAvailableEndpointServices/read",
+              "Microsoft.Network/networkInterfaces/ipConfigurations/read",
+              "Microsoft.Resources/deployments/operations/read",
+              "Microsoft.Resources/deployments/read",
+              "Microsoft.Resources/deployments/delete",
+              "Microsoft.Resources/deployments/cancel/action",
+              "Microsoft.Resources/deployments/validate/action",
+              "Microsoft.Resources/resources/read",
+              "Microsoft.Resources/subscriptions/operationresults/read",
+              "Microsoft.Resources/subscriptions/resourceGroups/delete",
+              "Microsoft.Resources/subscriptions/resourceGroups/read",
+              "Microsoft.Resources/subscriptions/resourcegroups/resources/read",
+              "Microsoft.Resources/subscriptions/resourceGroups/write",
+              "Microsoft.Authorization/roleDefinitions/write",
+              "Microsoft.Authorization/roleAssignments/write",
+              "Microsoft.MarketplaceOrdering/offertypes/publishers/offers/plans/agreements/read",
+              "Microsoft.MarketplaceOrdering/offertypes/publishers/offers/plans/agreements/write",
+              "Microsoft.Network/networkSecurityGroups/delete",
+              "Microsoft.Storage/storageAccounts/delete",
+              "Microsoft.Storage/storageAccounts/write",
+              "Microsoft.Resources/deployments/write",
+              "Microsoft.Resources/deployments/operationStatuses/read",
+              "Microsoft.Authorization/roleAssignments/read"
+            ],
+            "notActions": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(subscription().id, parameters('principalId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('roleName'))))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('roleName')))]",
+        "principalId": "[parameters('principalId')]",
+        "principalType": "User"
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', guid(subscription().id, parameters('roleName')))]"
+      ]
+    }
+  ]
+}
